@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.librarySys.dao.LendMapper">
+
+  <insert id="insLendList" parameterType="map">
+    insert into librarydb.lend_list
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+
+      <if test="book_id != null" >
+        book_id,
+      </if>
+      <if test="user_id != null" >
+        user_id,
+      </if>
+      <if test="lend_date != null" >
+        lend_date,
+      </if>
+      <if test="back_date != null" >
+        back_date,
+      </if>
+      <if test="state != null" >
+        state,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="book_id != null" >
+        #{book_id},
+      </if>
+      <if test="user_id != null" >
+        #{user_id},
+      </if>
+      <if test="lend_date != null" >
+        #{lend_date},
+      </if>
+      <if test="back_date != null" >
+        #{back_date},
+      </if>
+      <if test="state != null" >
+        #{state},
+      </if>
+    </trim>
+  </insert>
+
+  <update id="updLendList" parameterType="map">
+    update librarydb.lend_list
+    set back_date = #{back_date},state=#{state}
+    where id = #{id}
+  </update>
+
+  <select id="showUserLendList" resultType="Lend">
+    select lend_list.id, books.bookName, users.username, lend_list.lend_date, lend_list.back_date, lend_list.state
+    from librarydb.lend_list, librarydb.books, librarydb.users
+    where lend_list.book_id = books.id and lend_list.user_id = users.id and user_id = #{id}
+  </select>
+
+  <select id="selById" resultType="Lend">
+    select *
+    from librarydb.lend_list
+    where id = #{id}
+  </select>
+
+  <select id="showBookLendList" parameterType="map" resultType="com.librarySys.pojo.Lend">
+    select lend_list.id, books.bookName, users.username, lend_list.lend_date, lend_list.back_date, lend_list.state
+    from librarydb.lend_list, librarydb.books, librarydb.users
+    <where>
+        <if test="id != null">
+          and book_id = #{id}
+        </if>
+        and lend_list.book_id = books.id and lend_list.user_id = users.id
+    </where>
+  </select>
+
+  <select id="showAllLendList" resultType="Lend">
+    select * from librarydb.lend_list
+  </select>
+
+</mapper>

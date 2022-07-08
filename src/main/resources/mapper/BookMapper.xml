@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.librarySys.dao.BookMapper">
+<resultMap id="rsMap" type="com.librarySys.pojo.Book">
+
+</resultMap>
+
+  <delete id="delById" parameterType="int">
+    delete
+    from books
+    where books.id = #{id}
+  </delete>
+
+  <select id="getBookNameById" parameterType="String" resultType="String">
+    select books.bookName
+    from books
+    where books.id = #{book_id}
+  </select>
+
+  <update id="updBookState">
+    update librarydb.books set state=#{state} where id = #{book_id}
+  </update>
+
+  <update id="updateBookInfo" parameterType="Book">
+    update librarydb.books
+    <set>
+      <if test="bookName != null">bookName=#{bookName},</if>
+      <if test="author != null">author=#{author},</if>
+      <if test="publish != null">publish=#{publish},</if>
+      <if test="ISBN != null">ISBN=#{ISBN},</if>
+      <if test="introduction != null">introduction=#{introduction},</if>
+      <if test="price != null">price=#{price},</if>
+      <if test="pubdate != null">pubdate=#{pubdate},</if>
+      <if test="class_id != null">class_id=#{class_id},</if>
+      <if test="pressmark != null">pressmark=#{pressmark},</if>
+      <if test="image != null">image=#{image}</if>
+    </set>
+    where books.id=#{id};
+  </update>
+
+  <select id="selAllBooks" resultType="Book">
+    select books.id, books.bookName, books.author, books.publish, books.ISBN, books.introduction, books.price, books.pubdate, classes.classname, books.pressmark, books.state
+    from librarydb.books
+    inner join classes
+    on librarydb.books.class_id = classes.id
+  </select>
+
+  <select id="selBookByName" resultType="Book">
+    select books.id, books.bookName, books.author, books.publish, books.ISBN, books.introduction, books.price, books.pubdate, classes.classname, books.pressmark, books.state
+    from librarydb.books
+    inner join classes on librarydb.books.class_id = classes.id
+    where books.bookName like #{entry} or books.author like #{entry} or classes.classname like #{entry}
+    limit #{start}, #{rows};
+  </select>
+
+  <select id="SearchBookforCount" resultType="int" parameterType="String">
+    select count(*)
+    from librarydb.books
+    inner join classes on librarydb.books.class_id = classes.id
+    where books.bookName like #{entry} or books.author like #{entry} or classes.classname like #{entry}
+
+  </select>
+
+  <select id="selBookById" resultType="Book">
+    select books.id, books.bookName, books.author, books.publish, books.ISBN, books.introduction, books.price, books.pubdate, classes.classname, books.pressmark, books.state, books.image, books.class_id
+    from librarydb.books
+    inner join classes on librarydb.books.class_id = classes.id
+    where books.id = #{id}
+  </select>
+
+  <select id="findTotalCount" resultType="int">
+    select count(*)
+    from librarydb.books
+  </select>
+
+  <select id="findBookByPage" parameterType="int" resultType="Book">
+    select books.id, books.bookName, books.author, books.publish, books.ISBN, books.introduction, books.price, books.pubdate, classes.classname, books.pressmark, books.state
+    from librarydb.books
+    inner join classes on librarydb.books.class_id = classes.id
+    limit #{start}, #{rows};
+  </select>
+
+  <insert id="insertNewBook" parameterType="Book">
+    insert into librarydb.books
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="bookName != null" >
+        bookName,
+      </if>
+      <if test="author != null" >
+        author,
+      </if>
+      <if test="publish != null" >
+        publish,
+      </if>
+      <if test="ISBN != null" >
+        ISBN,
+      </if>
+      <if test="introduction != null" >
+        introduction,
+      </if>
+      <if test="price != null" >
+        price,
+      </if>
+      <if test="pubdate != null" >
+        pubdate,
+      </if>
+      <if test="class_id != null" >
+        class_id,
+      </if>
+      <if test="pressmark != null" >
+        pressmark,
+      </if>
+      <if test="state != null" >
+        state,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id},
+      </if>
+      <if test="bookName != null" >
+        #{bookName},
+      </if>
+      <if test="author != null" >
+        #{author},
+      </if>
+      <if test="publish != null" >
+        #{publish},
+      </if>
+      <if test="ISBN != null" >
+        #{ISBN},
+      </if>
+      <if test="introduction != null" >
+        #{introduction},
+      </if>
+      <if test="price != null" >
+        #{price},
+      </if>
+      <if test="pubdate != null" >
+        #{pubdate},
+      </if>
+      <if test="class_id != null" >
+        #{class_id},
+      </if>
+      <if test="pressmark != null" >
+        #{pressmark},
+      </if>
+      <if test="state != null" >
+        #{state},
+      </if>
+    </trim>
+  </insert>
+</mapper>

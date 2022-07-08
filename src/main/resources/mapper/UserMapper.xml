@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.librarySys.dao.UserMapper">
+
+  <delete id="delById" parameterType="String">
+    delete
+    from users
+    where id=#{id}
+  </delete>
+  <select id="findUserByPage" parameterType="int" resultType="User">
+    select *
+    from librarydb.users
+    limit #{start}, #{rows};
+  </select>
+
+  <select id="findTotalCount" resultType="int">
+    select count(*)
+    from librarydb.users
+  </select>
+
+  <update id="updUserInfo" parameterType="User">
+    update librarydb.users
+    <set>
+      <if test="username != null">username=#{username},</if>
+      <if test="password != null">password=#{password},</if>
+      <if test="email != null">email=#{email},</if>
+      <if test="phone != null">phone=#{phone}</if>
+    </set>
+    where users.id=#{id}
+  </update>
+
+  <update id="adminUpdateOp" parameterType="User">
+    update librarydb.users
+    <set>
+      <if test="username != null">username=#{username},</if>
+      <if test="password != null">password=#{password},</if>
+      <if test="email != null">email=#{email},</if>
+      <if test="phone != null">phone=#{phone}</if>
+    </set>
+    where users.id=#{id}
+  </update>
+
+  <select id="selById" resultType="User" parameterType="String">
+    select * from librarydb.users where id=#{id}
+  </select>
+
+  <select id="selByName" resultType="User">
+    select *
+    from users
+    where username=#{username}
+  </select>
+
+  <insert id="insUsers" parameterType="User">
+    insert into librarydb.users
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="username != null" >
+        username,
+      </if>
+      <if test="password != null" >
+        password,
+      </if>
+      <if test="phone != null" >
+        phone,
+      </if>
+      <if test="email != null" >
+        email,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id},
+      </if>
+      <if test="username != null" >
+        #{username},
+      </if>
+      <if test="password != null" >
+        #{password},
+      </if>
+      <if test="phone != null" >
+        #{phone},
+      </if>
+      <if test="email != null" >
+        #{email},
+      </if>
+    </trim>
+  </insert>
+</mapper>

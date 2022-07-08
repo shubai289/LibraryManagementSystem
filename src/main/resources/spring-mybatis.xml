@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/aop
+        http://www.springframework.org/schema/aop/spring-aop.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/tx
+        http://www.springframework.org/schema/tx/spring-tx.xsd">
+    <!--  1、关联数据库配置文件  -->
+    <context:property-placeholder location="classpath:database.properties"/>
+    <!--  2、连接池
+        dbcp: 半自动化操作，不能自动连接
+        c3p0: 自动化操作，自动加载配置文件并设置到对象中
+        druid:
+        hikari:
+        -->
+    <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+        <property name="driverClass" value="${jdbc.driver}"/>
+        <property name="jdbcUrl" value="${jdbc.url}"/>
+        <property name="user" value="${jdbc.username}"/>
+        <property name="password" value="${jdbc.password}"/>
+        <property name="maxPoolSize" value="30"/>
+        <property name="minPoolSize" value="1"/>
+        <property name="checkoutTimeout" value="10000"/>
+        <property name="acquireRetryAttempts" value="2"/>
+    </bean>
+    <!--  3、sqlSessionFactory-->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="typeAliasesPackage" value="com.librarySys.pojo"/>
+        <!--    绑定Mybatis配置文件    -->
+        <property name="configLocation" value="classpath:mybatis-config.xml"/>
+    </bean>
+    <!--配置dao接口扫描包，动态实现了dao接口可以注入到Spring中-->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <!--    扫描dao    -->
+        <property name="basePackage" value="com.librarySys.dao"/>
+        <!--    注入SQLSessionFactory    -->
+        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>
+    </bean>
+    <!--  扫描service  -->
+    <context:component-scan base-package="com.librarySys.service.impl"/>
+    <!--  将所有的业务类注入到Spring，通过配置或 注解实现  -->
+
+    <!-- 声明式事务配置 -->
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <!--    注入数据源    -->
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+<!--    <tx:advice id="txAdvice" transaction-manager="transactionManager">-->
+<!--        <tx:attributes>-->
+<!--            <tx:method name="ins*"/>-->
+<!--            <tx:method name="del*"/>-->
+<!--            <tx:method name="upd*"/>-->
+<!--            &lt;!&ndash;<tx:method name="*" read-only="true"/>&ndash;&gt;-->
+<!--        </tx:attributes>-->
+<!--    </tx:advice>-->
+<!--    -->
+    <!--aop事务支持-->
+
+</beans>

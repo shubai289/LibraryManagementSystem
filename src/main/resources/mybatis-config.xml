@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration
+    PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    
+<!--  配置数据源，交给Spring  -->
+    <typeAliases>
+        <package name="com.librarySys.pojo"/>
+    </typeAliases>
+    <mappers>
+        <mapper resource="mapper/BookMapper.xml"/>
+        <mapper resource="mapper/LendMapper.xml"/>
+        <mapper resource="mapper/UserMapper.xml"/>
+        <mapper resource="mapper/AdminMapper.xml"/>
+    </mappers>
+</configuration>
